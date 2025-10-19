@@ -1,25 +1,25 @@
-# 如果你只想轻量化安装xiaozhi-server，只使用本地的配置文件，不需要理会这个文件，不需要改动本文件任何东西
-# 如果你想从manager-api获取配置，请往下看：
-# 请将本文件复制到xiaozhi-server/data目录下，没有data目录，请创建一个，并将复制过去的文件命名为.config.yaml
-# 注意如果data目录有.config.yaml文件，请先删除它
-# 先启动manager-api和manager-web，注册一个账号，第一个注册的账号为管理员
-# 使用管理员，进入【参数管理】页面，找到【server.secret】，复制它到参数值，注意每次从零部署，server.secret都会变化
-# 打开本data目录下的.config.yaml文件，修改manager-api.secret为刚才复制出来的server.secret
+# If you only want to install xiaozhi-server in a lightweight way, using only the local configuration file, you don't need to care about this file and don't need to change anything in this file.
+# If you want to get the configuration from manager-api, please read below:
+# Please copy this file to the xiaozhi-server/data directory. If there is no data directory, please create one, and name the copied file .config.yaml
+# Note: If there is already a .config.yaml file in the data directory, please delete it first.
+# First, start manager-api and manager-web, and register an account. The first registered account is the administrator.
+# Use the administrator account to enter the [Parameter Management] page, find [server.secret], and copy it to the parameter value. Note that every time you deploy from scratch, server.secret will change.
+# Open the .config.yaml file in the data directory and set manager-api.secret to the server.secret you just copied.
 server:
   ip: 0.0.0.0
   port: 8000
-  # http服务的端口，用于视觉分析接口
+  # The http service port, used for the visual analysis interface
   http_port: 8003
-  # 视觉分析接口地址
-  # 向设备发送的视觉分析的接口地址
-  # 如果按下面默认的写法，系统会自动生成视觉识别地址，并输出在启动日志里，这个地址你可以直接用浏览器访问确认一下
-  # 当你使用docker部署或使用公网部署(使用ssl、域名)时，不一定准确
-  # 所以如果你使用docker部署时，将vision_explain设置成局域网地址
-  # 如果你使用公网部署时，将vision_explain设置成公网地址
-  vision_explain: http://你的ip或者域名:端口号/mcp/vision/explain
+  # Visual analysis interface address
+  # The interface address for visual analysis sent to the device
+  # If you use the default configuration below, the system will automatically generate the visual recognition address and print it in the startup log. You can directly check this address in your browser.
+  # When deploying with Docker or using a public network (with SSL, domain names), this address may not be accurate.
+  # Therefore, when deploying with Docker, set vision_explain to the LAN address.
+  # If deploying on a public network, set vision_explain to the public address.
+  vision_explain: http://your_ip_or_domain:port/mcp/vision/explain
 manager-api:
-  # 你的manager-api的地址，最好使用局域网ip
-  # 如果使用docker部署，请使用填写成 http://xiaozhi-esp32-server-web:8002/xiaozhi
+  # The address of your manager-api. It's best to use a LAN IP.
+  # If deploying with Docker, please set this to http://xiaozhi-esp32-server-web:8002/xiaozhi
   url: http://127.0.0.1:8002/xiaozhi
-  # 你的manager-api的token，就是刚才复制出来的server.secret
-  secret: 你的server.secret值
+  # Your manager-api token, which is the server.secret you just copied
+  secret: your_server.secret_value

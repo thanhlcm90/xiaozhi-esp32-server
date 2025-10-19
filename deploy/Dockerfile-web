@@ -1,0 +1,53 @@
+# Stage 1: Build Vue frontend
+FROM node:22-slim as web-builder
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV DOCKER=true
+WORKDIR /app
+COPY main/manager-web/package.json main/manager-web/pnpm-lock.yaml main/manager-web/pnpm-workspace.yaml ./
+RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN pnpm install --frozen-lockfile
+COPY main/manager-web .
+RUN pnpm run build
+
+# Stage 2: Build Java back end
+FROM maven:3.9.4-eclipse-temurin-21 as api-builder
+WORKDIR /app
+COPY main/manager-api/pom.xml .
+COPY main/manager-api/src ./src
+RUN mvn clean package -Dmaven.test.skip=true
+
+# Stage 3: Build final image
+FROM bellsoft/liberica-runtime-container:jre-21-glibc
+
+# Install Nginx and font libraries
+RUN apk update && \
+    apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/ \
+        nginx \
+        bash \
+        fontconfig \
+        ttf-dejavu \
+        msttcorefonts-installer \
+    && ACCEPT_EULA=Y apk add --no-cache msttcorefonts-installer \
+    && fc-cache -f -v \
+    && rm -rf /var/cache/apk/*
+
+# Update font cache
+RUN (printf 'YES\n' | update-ms-fonts || true) && fc-cache -f -v
+
+# Configure Nginx
+COPY docs/docker/nginx.conf /etc/nginx/nginx.conf
+
+# Copy frontend build artifacts
+COPY --from=web-builder /app/dist /usr/share/nginx/html
+
+# Copy Java backend JAR
+COPY --from=api-builder /app/target/xiaozhi-esp32-api.jar /app/xiaozhi-esp32-api.jar
+
+# Expose port
+EXPOSE 8002
+
+# Start script
+COPY docs/docker/start.sh /start.sh
+RUN chmod +x /start.sh
+CMD ["/start.sh"]

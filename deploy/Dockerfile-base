@@ -1,0 +1,14 @@
+# Stage 1: Build Python dependencies
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Configure pip set timeout and retries
+RUN pip config set global.timeout 120 && \
+    pip config set install.retries 5
+
+COPY main/xiaozhi-server/requirements.txt .
+
+# Install Python dependencies with parallel downloading
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir -r requirements.txt --default-timeout=120 --retries 5
