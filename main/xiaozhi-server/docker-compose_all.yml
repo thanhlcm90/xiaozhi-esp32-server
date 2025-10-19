@@ -4,7 +4,7 @@ version: '3'
 services:
   # Server模块
   xiaozhi-esp32-server:
-    image: thanhlcm90/xiaozhi-server:latest
+    image: ghcr.nju.edu.cn/xinnan-tech/xiaozhi-esp32-server:server_latest
     container_name: xiaozhi-esp32-server
     depends_on:
       - xiaozhi-esp32-server-db
@@ -25,11 +25,11 @@ services:
       # 配置文件目录
       - ./data:/opt/xiaozhi-esp32-server/data
       # 模型文件挂接，很重要
-      - ./models/speech_UniASR_asr_2pass-vi-16k/model.pt:/opt/xiaozhi-esp32-server/models/SenseVoiceSmall/model.pt
+      - ./models/SenseVoiceSmall/model.pt:/opt/xiaozhi-esp32-server/models/SenseVoiceSmall/model.pt
 
   # manager-api和manager-web模块
   xiaozhi-esp32-server-web:
-    image: thanhlcm90/xiaozhi-server-web:latest
+    image: ghcr.nju.edu.cn/xinnan-tech/xiaozhi-esp32-server:web_latest
     container_name: xiaozhi-esp32-server-web
     restart: always
     networks:
