@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Script Author: @VanillaNahida
 # This file is used to automatically download required files of this project and create all necessary directories
 # Currently only supports X86 architecture Ubuntu systems, other systems are not tested
@@ -13,26 +13,6 @@ handle_interrupt() {
 
 # Set trap to handle Ctrl+C
 trap handle_interrupt SIGINT
-
-# Handle Esc key
-# Save terminal settings
-old_stty_settings=$(stty -g)
-# Set terminal to respond immediately without echo
-stty -icanon -echo min 1 time 0
-
-# Background process to detect Esc key
-(while true; do
-    read -r key
-    if [[ $key == $'\e' ]]; then
-        # Esc key detected, trigger interrupt handler
-        kill -SIGINT $$
-        break
-    fi
-done) &
-
-# Restore terminal settings when script exits
-trap 'stty "$old_stty_settings"' EXIT
-
 
 # Print colored ASCII art
 echo -e "\e[1;32m"  # Set color to bright green
@@ -183,8 +163,9 @@ if check_installed; then
         fi
         
         # Download the latest config files
-        check_and_download "/opt/xiaozhi-server/docker-compose_all.yml" "https://ghfast.top/https://raw.githubusercontent.com/xinnan-tech/xiaozhi-esp32-server/refs/heads/main/main/xiaozhi-server/docker-compose_all.yml"
-        check_and_download "/opt/xiaozhi-server/data/.config.yaml" "https://ghfast.top/https://raw.githubusercontent.com/xinnan-tech/xiaozhi-esp32-server/refs/heads/main/main/xiaozhi-server/config_from_api.yaml"
+        check_and_download "/opt/xiaozhi-server/docker-compose_all.yml" "https://ghfast.top/https://raw.githubusercontent.com/thanhlcm90/xiaozhi-esp32-server/refs/heads/main/deploy/docker-compose_all.yml"
+        check_and_download "/opt/xiaozhi-server/nginx.conf" "https://ghfast.top/https://raw.githubusercontent.com/thanhlcm90/xiaozhi-esp32-server/refs/heads/main/deploy/nginx.conf"
+        check_and_download "/opt/xiaozhi-server/data/.config.yaml" "https://ghfast.top/https://raw.githubusercontent.com/thanhlcm90/xiaozhi-esp32-server/refs/heads/main/main/xiaozhi-server/config_from_api.yaml"
         
         # Start Docker services
         echo "Starting the latest version of services..."
