@@ -90,33 +90,47 @@ async def sendAudio(conn, audios, frame_duration=60):
     if audios is None or len(audios) == 0:
         return
 
+    # Get send delay configuration
+    send_delay = conn.config.get("tts_audio_send_delay", -1) / 1000.0
+
     if isinstance(audios, bytes):
-        if conn.client_abort:
-            return
-
-        conn.last_activity_time = time.time() * 1000
-
         # Get or initialize flow control state
-        if not hasattr(conn, "audio_flow_control"):
+        if not hasattr(conn, "audio_flow_control") or conn.audio_flow_control.get("sentence_id") != conn.sentence_id:
             conn.audio_flow_control = {
                 "last_send_time": 0,
                 "packet_count": 0,
                 "start_time": time.perf_counter(),
                 "sequence": 0,  # Add sequence number
+                "sentence_id": conn.sentence_id,
             }
 
+        if conn.client_abort:
+            return
+
+        conn.last_activity_time = time.time() * 1000
+
+        # Pre-buffer: send the first 5 packets directly without delay
+        pre_buffer_count = 5
         flow_control = conn.audio_flow_control
         current_time = time.perf_counter()
-        # Calculate expected send time
-        expected_time = flow_control["start_time"] + (
-            flow_control["packet_count"] * frame_duration / 1000
-        )
-        delay = expected_time - current_time
-        if delay > 0:
-            await asyncio.sleep(delay)
+
+        if flow_control["packet_count"] < pre_buffer_count:
+            # Pre-buffer phase, send directly without delay
+            pass
+        elif send_delay > 0:
+            # Use fixed delay
+            await asyncio.sleep(send_delay)
         else:
-            # Correct error
-            flow_control["start_time"] += abs(delay)
+            effective_packet = flow_control["packet_count"] - pre_buffer_count
+            expected_time = flow_control["start_time"] + (
+                effective_packet * frame_duration / 1000
+            )
+            delay = expected_time - current_time
+            if delay > 0:
+                await asyncio.sleep(delay)
+            else:
+                # Correct error
+                flow_control["start_time"] += abs(delay)
 
         if conn.conn_from_mqtt_gateway:
             # Calculate timestamp and sequence number
@@ -142,7 +156,7 @@ async def sendAudio(conn, audios, frame_duration=60):
         play_position = 0
 
         # Execute pre-buffer
-        pre_buffer_frames = min(3, len(audios))
+        pre_buffer_frames = min(5, len(audios))
         for i in range(pre_buffer_frames):
             if conn.conn_from_mqtt_gateway:
                 # Calculate timestamp and sequence number
@@ -164,12 +178,16 @@ async def sendAudio(conn, audios, frame_duration=60):
             # Reset no voice state
             conn.last_activity_time = time.time() * 1000
 
-            # Calculate expected send time
-            expected_time = start_time + (play_position / 1000)
-            current_time = time.perf_counter()
-            delay = expected_time - current_time
-            if delay > 0:
-                await asyncio.sleep(delay)
+            if send_delay > 0:
+                # Fixed delay mode
+                await asyncio.sleep(send_delay)
+            else:
+                # Calculate expected send time
+                expected_time = start_time + (play_position / 1000)
+                current_time = time.perf_counter()
+                delay = expected_time - current_time
+                if delay > 0:
+                    await asyncio.sleep(delay)
 
             if conn.conn_from_mqtt_gateway:
                 # Calculate timestamp and sequence number (using current data packet index to ensure continuity)

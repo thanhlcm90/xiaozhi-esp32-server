@@ -33,7 +33,7 @@ async def handleAudioMessage(conn, audio):
 
 async def resume_vad_detection(conn):
     # Wait for 2 seconds to resume VAD detection
-    await asyncio.sleep(1)
+    await asyncio.sleep(2)
     conn.just_woken_up = False
 
 
@@ -140,7 +140,7 @@ async def check_bind_device(conn):
         text = f"Please login to the control panel, input {conn.bind_code}, bind the device."
         await send_stt_message(conn, text)
 
-        # Play提示音
+        # Play notification sound
         music_path = "config/assets/bind_code.wav"
         opus_packets = audio_to_data(music_path)
         conn.tts.tts_audio_queue.put((SentenceType.FIRST, opus_packets, text))
@@ -157,7 +157,7 @@ async def check_bind_device(conn):
                 continue
         conn.tts.tts_audio_queue.put((SentenceType.LAST, [], None))
     else:
-        # Play未绑定提示
+        # Play not bound prompt
         conn.client_abort = False
         text = f"No version information found for this device, please correctly configure the OTA address, then recompile the firmware."
         await send_stt_message(conn, text)

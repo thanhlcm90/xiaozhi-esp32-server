@@ -841,6 +841,8 @@ export default {
   'modelConfigDialog.modelInfo': 'Model Information',
   'modelConfigDialog.enable': 'Enable',
   'modelConfigDialog.setDefault': 'Set as Default',
+  'modelConfigDialog.modelId': 'Model ID',
+  'modelConfigDialog.enterModelId': 'If not filled in, it will be generated automatically',
   'modelConfigDialog.modelName': 'Model Name',
   'modelConfigDialog.enterModelName': 'Please enter model name',
   'modelConfigDialog.modelCode': 'Model Code',
@@ -876,6 +878,8 @@ export default {
   'ttsModel.operationClosed': 'Operation closed',
   'ttsModel.edit': 'Edit',
   'ttsModel.delete': 'Delete',
+  'ttsModel.deleteVoiceSuccess': 'Successfully deleted {count} voices',
+  'ttsModel.deleteFailed': 'Failed to delete voices',
   'ttsModel.save': 'Save',
   'ttsModel.deselectAll': 'Deselect All',
   'ttsModel.selectAll': 'Select All',
@@ -885,6 +889,8 @@ export default {
   'ttsModel.unnamedVoice': 'Unnamed Voice',
   'ttsModel.finishEditingFirst': 'Please finish current editing first',
   'ttsModel.selectVoiceToDelete': 'Please select voices to delete',
+  'ttsModel.warning': 'Warning',
+  'ttsModel.confirmDeleteVoice': 'Are you sure to delete {count} voices?',
 
   // OTA Management Page Text
   'otaManagement.firmwareManagement': 'Firmware Management',
@@ -1019,7 +1025,7 @@ export default {
   'warning': 'Warning',
   'info': 'Info',
   'common.networkError': 'Network request failed',
-  
+
   // SM2 Encryption
   'sm2.publicKeyNotConfigured': 'SM2 public key not configured, please contact administrator',
   'sm2.encryptionFailed': 'Password encryption failed',
@@ -1094,7 +1100,10 @@ export default {
   'voiceClone.reset': 'Reset',
   'voiceClone.play': 'Play',
   'voiceClone.pause': 'Pause',
+  'voiceClone.stop': 'Stop',
   'voiceClone.cancel': 'Cancel',
+  'voiceClone.warning': 'Warning',
+  'voiceClone.ok': 'OK',
   'voiceClone.nextStep': 'Next',
   'voiceClone.prevStep': 'Previous',
   'voiceClone.upload': 'Upload Audio',
@@ -1108,4 +1117,5 @@ export default {
   'voiceClone.updateNameSuccess': 'Name updated successfully',
   'voiceClone.updateNameFailed': 'Failed to update name',
   'voiceClone.playFailed': 'Play failed',
+  'voiceClone.Details': 'Error Details',
 }

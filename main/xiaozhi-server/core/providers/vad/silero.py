@@ -70,7 +70,9 @@ class VADProvider(VADProviderBase):
 
                 # Update sliding window
                 conn.client_voice_window.append(is_voice)
-                client_have_voice = (conn.client_voice_window.count(True) >= self.frame_window_threshold)
+                client_have_voice = (
+                    conn.client_voice_window.count(True) >= self.frame_window_threshold
+                )
 
                 # If there was voice before, but there is no voice now, and the time difference between the last voice and the current voice has exceeded the silence threshold, it is considered that the sentence has been said
                 if conn.client_have_voice and not client_have_voice:
