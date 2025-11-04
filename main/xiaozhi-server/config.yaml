@@ -74,6 +74,12 @@ enable_stop_tts_notify: false
 # End-of-utterance notification sound file path
 stop_tts_notify_voice: "config/assets/tts_notify.mp3"
 
+# TTS音频发送延迟配置
+# tts_audio_send_delay: 控制音频包发送间隔
+#   0: 使用精确时间控制，严格匹配音频帧率（默认，运行时按音频帧率计算）
+#   > 0: 使用固定延迟（毫秒）发送，例如: 60
+tts_audio_send_delay: 0
+
 exit_commands:
   - "退出"
   - "关闭"
@@ -176,6 +182,9 @@ prompt: |
   Never:
   - Monologue endlessly or ramble
   - Engage in long, serious conversations
+
+# Default system prompt template file
+prompt_template: agent-base-prompt.txt
 
 # End prompt
 end_prompt:
@@ -981,6 +990,7 @@ TTS:
     api_key: your api_key
     voice: x5_lingxiaoxuan_flow
     output_dir: tmp/
+<<<<<<< HEAD
     # The following are optional defaults. Note: V5 voice does not support oral config.
     # oral_level: mid   # Orality: high, mid, low
     # spark_assist: 1   # Use large model for orality: 1=on, 0=off
@@ -991,3 +1001,15 @@ TTS:
     # volume: 50        # Volume: 0-100
     # speed: 50         # Speed: 0-100
     # pitch: 50         # Pitch: 0-100
+=======
+    # 以下可不用设置，使用默认设置，注意V5音色不支持口语化配置
+    # oral_level: mid  # 口语化等级：high, mid, low
+    # spark_assist: 1  # 是否通过大模型进行口语化 开启:1, 关闭:0
+    # stop_split: 0  # 关闭服务端拆句 不关闭：0，关闭：1
+    # remain: 0  # 是否保留原书面语的样子	保留:1, 不保留:0
+    # format: raw  # 音频格式：raw(PCM), lame(MP3), speex, opus, opus-wb, opus-swb, speex-wb
+    # sample_rate: 24000  # 采样率：16000, 8000, 24000
+    # volume: 50  # 音量：0-100
+    # speed: 50  # 语速：0-100
+    # pitch: 50  # 语调：0-100
+>>>>>>> fork/main
